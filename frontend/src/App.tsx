@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import SignInPage from "./pages/auth/SignInPage";
+import LoginPage from "./pages/auth/LoginPage";
 import Home from "./pages/Home";
 import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RedirectAuthenticatedUser from "./components/auth/RedirectAuthenticatedUser ";
-import SignUpPage from "./pages/auth/SignUpPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import usePageTitle from "./hooks/use-pageTitle";
 import NoRouteFallback from "./pages/NoRouteFallback";
 
@@ -24,18 +24,18 @@ const App = () => {
         }
       />
       <Route
-        path="/sign-in"
+        path="/login"
         element={
           <RedirectAuthenticatedUser>
-            <SignInPage />
+            <LoginPage />
           </RedirectAuthenticatedUser>
         }
       />
       <Route
-        path="/sign-up"
+        path="/register"
         element={
           <RedirectAuthenticatedUser>
-            <SignUpPage />
+            <RegisterPage />
           </RedirectAuthenticatedUser>
         }
       />

@@ -1,9 +1,9 @@
-import { SignInInputs } from "@/lib/types";
+import { LoginInputs, RegisterInputs } from "@/lib/types";
 import { http } from "./base";
 import { User } from "@/models/User";
 
-export const signin = async (signInInputs: SignInInputs): Promise<User> => {
-  const result = await http.post<User>("/sign-in", signInInputs);
+export const login = async (loginInputs: LoginInputs): Promise<User> => {
+  const result = await http.post<User>("/login", loginInputs);
   // TO:DO implement return model
   return {
     id: "1",
@@ -11,8 +11,10 @@ export const signin = async (signInInputs: SignInInputs): Promise<User> => {
   };
 };
 
-export const signup = async (signUpInputs: SignUpInputs): Promise<User> => {
-  const result = await http.post<User>("/sign-up", signUpInputs);
+export const register = async (
+  registerInputs: RegisterInputs
+): Promise<User> => {
+  const result = await http.post<User>("/register", registerInputs);
   // TO:DO implement return model
   return {
     id: "1",

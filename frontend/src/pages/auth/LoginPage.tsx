@@ -10,17 +10,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignInInputs } from "@/lib/types";
+import { LoginInputs } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { signInSchema } from "@/lib/validations";
+import { loginSchema } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
 import { Link } from "react-router-dom";
 
-const SignInPage = () => {
-  const { signin, isLoading, error } = useAuthStore();
+const LoginPage = () => {
+  const { login, isLoading, error } = useAuthStore();
 
-  const form = useForm<SignInInputs>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<LoginInputs>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -28,8 +28,8 @@ const SignInPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: SignInInputs) => {
-    await signin(data);
+  const onSubmit = async (data: LoginInputs) => {
+    await login(data);
   };
 
   return (
@@ -41,7 +41,7 @@ const SignInPage = () => {
           className="h-10"
         />
         <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          Login to your account
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -78,7 +78,7 @@ const SignInPage = () => {
               disabled={!form.formState.isValid || isLoading}
               type="submit"
             >
-              {isLoading ? "Signing in" : "Sign in"}
+              {isLoading ? "..." : "Login"}
             </Button>
           </form>
         </Form>
@@ -95,7 +95,7 @@ const SignInPage = () => {
           <div>
             Not a member?
             <Link
-              to="/sign-up"
+              to="/register"
               className="font-semibold text-indigo-600 hover:text-indigo-500 pl-1"
             >
               Register
@@ -107,4 +107,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default LoginPage;

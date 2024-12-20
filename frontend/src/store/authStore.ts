@@ -1,5 +1,5 @@
-import { SignInInputs, SignUpInputs } from "@/lib/types";
-import { signin } from "@/api/auth";
+import { LoginInputs, RegisterInputs } from "@/lib/types";
+import { login, register } from "@/api/auth";
 import { create } from "zustand";
 
 export interface AuthStore {
@@ -9,8 +9,8 @@ export interface AuthStore {
   isLoading: boolean;
   isCheckingAuth: boolean;
   message: string | null;
-  signin: (signInInputs: SignInInputs) => Promise<void>;
-  signup: (signUpInputs: SignUpInputs) => Promise<void>;
+  login: (loginInputs: LoginInputs) => Promise<void>;
+  register: (registerInputs: RegisterInputs) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -21,10 +21,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isCheckingAuth: true,
   message: null,
 
-  signin: async (signInInputs: SignInInputs) => {
+  login: async (loginInputs: LoginInputs) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await signin(signInInputs);
+      const response = await login(loginInputs);
       set({
         isAuthenticated: true,
         user: response.id,
@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         isLoading: false,
       });
     } catch (error: Error | unknown) {
-      let errMessage = "Error signing in";
+      let errMessage = "Error when trying to login";
       if (error instanceof Error) {
         errMessage = error.message;
       }
@@ -40,10 +40,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
       throw error;
     }
   },
-  signup: async (signUpInputs: SignUpInputs) => {
+  register: async (registerInputs: RegisterInputs) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await signup(signUpInputs);
+      const response = await register(registerInputs);
       set({
         isAuthenticated: true,
         user: response.id,
@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         isLoading: false,
       });
     } catch (error: Error | unknown) {
-      let errMessage = "Error signing up";
+      let errMessage = "Error when trying to register user";
       if (error instanceof Error) {
         errMessage = error.message;
       }

@@ -10,17 +10,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignInInputs, SignUpInputs } from "@/lib/types";
+import { RegisterInputs } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { signInSchema } from "@/lib/validations";
+import { registerSchema } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
 import { Link } from "react-router-dom";
 
-const SignUpPage = () => {
-  const { signup, isLoading, error } = useAuthStore();
+const RegisterPage = () => {
+  const { register, isLoading, error } = useAuthStore();
 
-  const form = useForm<SignUpInputs>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<RegisterInputs>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -29,8 +29,8 @@ const SignUpPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: SignInInputs) => {
-    await signup(data);
+  const onSubmit = async (data: RegisterInputs) => {
+    await register(data);
   };
 
   return (
@@ -42,7 +42,7 @@ const SignUpPage = () => {
           className="h-10"
         />
         <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">
-          Sign up to our site
+          Register to our site
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -96,7 +96,7 @@ const SignUpPage = () => {
               disabled={!form.formState.isValid || isLoading}
               type="submit"
             >
-              {isLoading ? "Signing up" : "Sign up"}
+              {isLoading ? "..." : "Register"}
             </Button>
           </form>
         </Form>
@@ -105,10 +105,10 @@ const SignUpPage = () => {
           <div>
             Already a member?
             <Link
-              to="/sign-in"
+              to="/login"
               className="font-semibold text-indigo-600 hover:text-indigo-500 pl-1"
             >
-              Sign in
+              Login
             </Link>
           </div>
         </div>
@@ -117,4 +117,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default RegisterPage;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { signInSchema, signUpSchema } from "./validations";
+import { loginSchema, registerSchema } from "./validations";
 
-export type SignInInputs = z.infer<typeof signInSchema>;
-export type SignUpInputs = z.infer<typeof signUpSchema>;
+export type LoginInputs = z.infer<typeof loginSchema>;
+export type RegisterInputs = z.infer<typeof registerSchema>;
