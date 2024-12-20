@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import { FC, ReactNode } from "react";
 
-const AuthLayout: React.FC<{
+const AuthLayout: FC<{
   children: ReactNode;
   header: string;
 }> = ({ children, header }) => {
