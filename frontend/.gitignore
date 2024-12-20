@@ -1,0 +1,33 @@
+# Node.js dependencies
+/node_modules/
+
+# Build output
+/build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor specific files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Dependencies from npm and yarn
+package-lock.json
+yarn.lock
+
+# Optional: Ignore the .env file in case you're using environment variables
+.env
