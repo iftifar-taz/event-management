@@ -6,10 +6,12 @@ import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
 import { useAuthStore } from "./store/authStore";
 import PageTitle from "./components/PageTitle";
+import AuthorizedRoute from "./components/auth/AuthorizedRoute";
+import UnauthorizedRoute from "./components/auth/UnauthorizedRoute";
 
 const App = () => {
   const { isAuthenticated } = useAuthStore();
-  // TO:DO move all routesto a const
+  // TO:DO move all routes to a const
   return (
     <Routes>
       <Route
@@ -21,41 +23,45 @@ const App = () => {
           </>
         }
       />
-      <Route
-        path="/dashboard"
-        element={
-          <>
-            <PageTitle title="Dashboard" />
-            <Dashboard />
-          </>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          !isAuthenticated ? (
+      <Route element={<AuthorizedRoute />}>
+        <Route
+          path="/dashboard"
+          element={
             <>
               <PageTitle title="Dashboard" />
-              <Login />
+              <Dashboard />
             </>
-          ) : (
-            <Navigate to="/dashboard" replace />
-          )
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          !isAuthenticated ? (
-            <>
-              <PageTitle title="Dashboard" />
-              <Register />
-            </>
-          ) : (
-            <Navigate to="/dashboard" replace />
-          )
-        }
-      />
+          }
+        />
+      </Route>
+      <Route element={<UnauthorizedRoute />}>
+        <Route
+          path="/login"
+          element={
+            !isAuthenticated ? (
+              <>
+                <PageTitle title="Dashboard" />
+                <Login />
+              </>
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            !isAuthenticated ? (
+              <>
+                <PageTitle title="Dashboard" />
+                <Register />
+              </>
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          }
+        />
+      </Route>
       <Route
         path="*"
         element={
