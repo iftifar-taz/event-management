@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 
-const NoRouteFallback = () => {
+const NotFound = () => {
   return <Navigate to="/dashboard" replace />;
 };
 
-export default NoRouteFallback;
+export default NotFound;

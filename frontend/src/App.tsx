@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import LoginPage from "./pages/auth/LoginPage";
+import Login from "./pages/auth/Login";
 import Home from "./pages/Home";
-import DashboardPage from "./pages/DashboardPage";
-import RegisterPage from "./pages/auth/RegisterPage";
+import Dashboard from "./pages/Dashboard";
+import Register from "./pages/auth/Register";
 import usePageTitle from "./hooks/use-pageTitle";
-import NoRouteFallback from "./pages/NoRouteFallback";
+import NotFound from "./pages/NotFound";
 import { useAuthStore } from "./store/authStore";
 
 const App = () => {
@@ -14,33 +14,20 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route
-        path="/dashboard"
-        element={
-          isAuthenticated ? <DashboardPage /> : <Navigate to="/login" replace />
-        }
-      />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route
         path="/login"
         element={
-          !isAuthenticated ? (
-            <LoginPage />
-          ) : (
-            <Navigate to="/dashboard" replace />
-          )
+          !isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace />
         }
       />
       <Route
         path="/register"
         element={
-          !isAuthenticated ? (
-            <RegisterPage />
-          ) : (
-            <Navigate to="/dashboard" replace />
-          )
+          !isAuthenticated ? <Register /> : <Navigate to="/dashboard" replace />
         }
       />
-      <Route path="*" element={<NoRouteFallback />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
