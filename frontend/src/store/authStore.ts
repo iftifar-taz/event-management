@@ -1,5 +1,5 @@
 import { LoginInputs, RegisterInputs } from "@/lib/types";
-import { login, register } from "@/api/auth";
+import { login, logout, register } from "@/api/auth";
 import { create } from "zustand";
 
 export interface AuthStore {
@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const response = await login(loginInputs);
       set({
         isAuthenticated: true,
-        user: response.id,
+        user: response,
         isLoading: false,
       });
     } catch (error) {
@@ -37,7 +37,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const response = await register(registerInputs);
       set({
         isAuthenticated: true,
-        user: response.id,
+        user: response,
+        isLoading: false,
+      });
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
+    }
+  },
+  logout: async () => {
+    set({ isLoading: true });
+    try {
+      await logout();
+      set({
+        user: null,
+        isAuthenticated: false,
         isLoading: false,
       });
     } catch (error) {

@@ -17,7 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const LoginPage = () => {
+const Login = () => {
   const { login, isLoading } = useAuthStore();
   const [error, setError] = useState("");
 
@@ -100,4 +100,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;
