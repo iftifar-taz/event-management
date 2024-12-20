@@ -1,42 +1,43 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import Home from "./pages/Home";
 import DashboardPage from "./pages/DashboardPage";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import RedirectAuthenticatedUser from "./components/auth/RedirectAuthenticatedUser ";
 import RegisterPage from "./pages/auth/RegisterPage";
 import usePageTitle from "./hooks/use-pageTitle";
 import NoRouteFallback from "./pages/NoRouteFallback";
+import { useAuthStore } from "./store/authStore";
 
 const App = () => {
   usePageTitle();
-
+  const { isAuthenticated } = useAuthStore();
+  // TO:DO move all routesto a const
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
+          isAuthenticated ? <DashboardPage /> : <Navigate to="/login" replace />
         }
       />
       <Route
         path="/login"
         element={
-          <RedirectAuthenticatedUser>
+          !isAuthenticated ? (
             <LoginPage />
-          </RedirectAuthenticatedUser>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
         }
       />
       <Route
         path="/register"
         element={
-          <RedirectAuthenticatedUser>
+          !isAuthenticated ? (
             <RegisterPage />
-          </RedirectAuthenticatedUser>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
         }
       />
       <Route path="*" element={<NoRouteFallback />} />
