@@ -1,15 +1,30 @@
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import { RequestHandler } from "express";
-import UserModel from "../models/User";
+import UserSchema from "../schemas/User";
 import mongoose from "mongoose";
+import { UserResponse } from "../models/UserResponse";
 
-export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
+export const getAuthenticatedUser: RequestHandler<
+  unknown,
+  UserResponse,
+  unknown,
+  unknown
+> = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.session.userId)
+    const user = await UserSchema.findById(req.session.userId)
       .select("+email")
       .exec();
-    res.status(200).json(user);
+
+    if (!user) {
+      throw createHttpError(401, "Invalid session");
+    }
+
+    res.status(200).json({
+      _id: user._id as mongoose.Types.ObjectId,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     next(error);
   }
@@ -23,7 +38,7 @@ interface RegisterBody {
 
 export const register: RequestHandler<
   unknown,
-  unknown,
+  UserResponse,
   RegisterBody,
   unknown
 > = async (req, res, next) => {
@@ -36,7 +51,7 @@ export const register: RequestHandler<
       throw createHttpError(400, "Parameters missing");
     }
 
-    const existingEmail = await UserModel.findOne({ email: email }).exec();
+    const existingEmail = await UserSchema.findOne({ email: email }).exec();
 
     if (existingEmail) {
       throw createHttpError(
@@ -47,15 +62,18 @@ export const register: RequestHandler<
 
     const passwordHashed = await bcrypt.hash(passwordRaw, 10);
 
-    const newUser = await UserModel.create({
+    const newUser = await UserSchema.create({
       name: name,
       email: email,
       password: passwordHashed,
     });
 
     req.session.userId = newUser._id as mongoose.Types.ObjectId;
-
-    res.status(201).json(newUser);
+    res.status(201).json({
+      _id: req.session.userId,
+      name: newUser.name,
+      email: newUser.email,
+    });
   } catch (error) {
     next(error);
   }
@@ -68,7 +86,7 @@ interface LoginBody {
 
 export const login: RequestHandler<
   unknown,
-  unknown,
+  UserResponse,
   LoginBody,
   unknown
 > = async (req, res, next) => {
@@ -80,7 +98,7 @@ export const login: RequestHandler<
       throw createHttpError(400, "Parameters missing");
     }
 
-    const user = await UserModel.findOne({ email: email })
+    const user = await UserSchema.findOne({ email: email })
       .select("+password +email")
       .exec();
 
@@ -95,7 +113,11 @@ export const login: RequestHandler<
     }
 
     req.session.userId = user._id as mongoose.Types.ObjectId;
-    res.status(201).json(user);
+    res.status(201).json({
+      _id: req.session.userId,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     next(error);
   }
