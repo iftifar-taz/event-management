@@ -1,15 +1,18 @@
 import express from "express";
-import { requiresAuth } from "../middleware/auth";
-import * as UserController from "../controllers/auth";
+import * as AuthController from "../controllers/auth";
 
 const router = express.Router();
 
-router.get("/user", requiresAuth, UserController.getAuthenticatedUser);
+router.post("/register", AuthController.register);
 
-router.post("/register", UserController.register);
+router.post("/login", AuthController.login);
 
-router.post("/login", UserController.login);
+router.post("/logout", AuthController.logout);
 
-router.post("/logout", UserController.logout);
+router.post("/password/forgot", AuthController.forgotPassword);
+
+router.post("/password/reset", AuthController.resetPassword);
+
+router.post("/password/change", AuthController.changePassword);
 
 export default router;

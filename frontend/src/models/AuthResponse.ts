@@ -1,4 +1,4 @@
-export interface User {
-  id: string;
-  email: string;
+export interface AuthResponse {
+  isSuccess: boolean;
+  message: string;
 }

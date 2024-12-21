@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express, { Express, NextFunction, Request, Response } from "express";
 import authRoutes from "./routes/auth";
+import usersRoutes from "./routes/users";
 import eventsRoutes from "./routes/events";
 import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
@@ -35,6 +36,7 @@ app.use(
 
 // Use routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", requiresAuth, usersRoutes);
 app.use("/api/events", requiresAuth, eventsRoutes);
 
 app.use((req, res, next) => {

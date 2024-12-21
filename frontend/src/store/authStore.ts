@@ -9,6 +9,10 @@ export interface AuthStore {
   isAuthenticated: boolean;
   isLoading: boolean;
   isCheckingAuth: boolean;
+  setUser: (user: User | null) => void;
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  setIsCheckingAuth: (isCheckingAuth: boolean) => void;
   login: (loginInputs: LoginInputs) => Promise<void>;
   register: (registerInputs: RegisterInputs) => Promise<void>;
   logout: () => Promise<void>;
@@ -21,16 +25,24 @@ export const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       isCheckingAuth: false,
-
+      setUser: (user: User | null) => set({ user, isAuthenticated: true }),
+      setIsAuthenticated: (isAuthenticated: boolean) =>
+        set({ isAuthenticated: isAuthenticated }),
+      setIsLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
+      setIsCheckingAuth: (isCheckingAuth: boolean) =>
+        set({ isCheckingAuth: isCheckingAuth }),
       login: async (loginInputs: LoginInputs) => {
         set({ isLoading: true });
         try {
           const response = await login(loginInputs);
           set({
-            isAuthenticated: true,
-            user: response,
             isLoading: false,
           });
+          if (response.isSuccess) {
+            set({
+              isAuthenticated: true,
+            });
+          }
         } catch (error) {
           set({ isLoading: false });
           throw error;
@@ -41,10 +53,13 @@ export const useAuthStore = create(
         try {
           const response = await register(registerInputs);
           set({
-            isAuthenticated: true,
-            user: response,
             isLoading: false,
           });
+          if (response.isSuccess) {
+            set({
+              isAuthenticated: true,
+            });
+          }
         } catch (error) {
           set({ isLoading: false });
           throw error;
@@ -57,6 +72,7 @@ export const useAuthStore = create(
           set({
             user: null,
             isAuthenticated: false,
+            isCheckingAuth: false,
             isLoading: false,
           });
         } catch (error) {

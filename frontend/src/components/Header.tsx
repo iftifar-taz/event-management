@@ -1,6 +1,11 @@
+import { User } from "@/models/User";
 import { SidebarTrigger } from "./ui/sidebar";
 
-const Header = () => {
+interface HeaderProps {
+  user: User | null;
+}
+
+const Header = ({ user }: HeaderProps) => {
   return (
     <header className="sticky top-0 flex w-full bg-white drop-shadow-1">
       <div className="flex flex-grow items-center justify-between pr-4 py-4 shadow-2 md:pr-6 2xl:pr-11">
@@ -9,12 +14,12 @@ const Header = () => {
           <div className="flex items-center gap-4">
             <div className="hidden text-right lg:block">
               <div className="block text-sm font-medium text-black">
-                Thomas Anree
+                {user?.name}
               </div>
-              <div className="block text-xs">role 1, role 2</div>
+              <div className="block text-xs">{user?.email}</div>
             </div>
             <div className="h-12 w-12 rounded-full bg-teal-600 flex items-center justify-center font-bold text-4xl text-gray-600">
-              T
+              {user?.name.charAt(0).toUpperCase()}
             </div>
           </div>
         </div>

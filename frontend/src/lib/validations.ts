@@ -18,3 +18,20 @@ export const registerSchema = z.object({
   password: requiredString.min(1, { message: "Field is required" }),
   confirmPassword: requiredString.min(1, { message: "Field is required" }),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: requiredString
+    .email({ message: "Invalid Email" })
+    .min(1, { message: "Field is required" }),
+});
+
+export const resetPasswordSchema = z.object({
+  password: requiredString.min(1, { message: "Field is required" }),
+  confirmPassword: requiredString.min(1, { message: "Field is required" }),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: requiredString.min(1, { message: "Field is required" }),
+  newPassword: requiredString.min(1, { message: "Field is required" }),
+  confirmNewPassword: requiredString.min(1, { message: "Field is required" }),
+});

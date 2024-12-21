@@ -1,24 +1,60 @@
-import { LoginInputs, RegisterInputs } from "@/lib/types";
+import {
+  ChangePasswordInputs,
+  ForgotPasswordInputs,
+  LoginInputs,
+  RegisterInputs,
+  ResetPasswordInputs,
+} from "@/lib/types";
 import { http } from "./base";
-import { User } from "@/models/User";
+import { AuthResponse } from "@/models/AuthResponse";
 
-export const getCurrentUser = async (): Promise<User> => {
-  const result = await http.get<User>("/auth/user");
-  return result.data;
-};
-
-export const login = async (loginInputs: LoginInputs): Promise<User> => {
-  const result = await http.post<User>("/auth/login", loginInputs);
+export const login = async (
+  loginInputs: LoginInputs
+): Promise<AuthResponse> => {
+  const result = await http.post<AuthResponse>("/auth/login", loginInputs);
   return result.data;
 };
 
 export const register = async (
   registerInputs: RegisterInputs
-): Promise<User> => {
-  const result = await http.post<User>("/auth/register", registerInputs);
+): Promise<AuthResponse> => {
+  const result = await http.post<AuthResponse>(
+    "/auth/register",
+    registerInputs
+  );
   return result.data;
 };
 
 export const logout = async (): Promise<void> => {
-  await http.post<User>("/auth/logout");
+  await http.post("/auth/logout");
+};
+
+export const forgotPassword = async (
+  forgotPasswordInputs: ForgotPasswordInputs
+): Promise<AuthResponse> => {
+  const result = await http.post<AuthResponse>(
+    "/auth/password/forgot",
+    forgotPasswordInputs
+  );
+  return result.data;
+};
+
+export const resetPassword = async (
+  resetPasswordInputs: ResetPasswordInputs
+): Promise<AuthResponse> => {
+  const result = await http.post<AuthResponse>(
+    "/auth/password/reset",
+    resetPasswordInputs
+  );
+  return result.data;
+};
+
+export const changePassword = async (
+  changePasswordInputs: ChangePasswordInputs
+): Promise<AuthResponse> => {
+  const result = await http.post<AuthResponse>(
+    "/auth/password/change",
+    changePasswordInputs
+  );
+  return result.data;
 };

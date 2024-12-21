@@ -3,32 +3,13 @@ import bcrypt from "bcrypt";
 import { RequestHandler } from "express";
 import UserSchema from "../schemas/User";
 import mongoose from "mongoose";
-import { UserResponse } from "../models/UserResponse";
+import crypto from "crypto";
+import env from "../util/validateEnv";
 
-export const getAuthenticatedUser: RequestHandler<
-  unknown,
-  UserResponse,
-  unknown,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const user = await UserSchema.findById(req.session.userId)
-      .select("+email")
-      .exec();
-
-    if (!user) {
-      throw createHttpError(401, "Invalid session");
-    }
-
-    res.status(200).json({
-      _id: user._id as mongoose.Types.ObjectId,
-      name: user.name,
-      email: user.email,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+interface AuthResponse {
+  isSuccess: boolean;
+  message?: string;
+}
 
 interface RegisterBody {
   name?: string;
@@ -38,16 +19,14 @@ interface RegisterBody {
 
 export const register: RequestHandler<
   unknown,
-  UserResponse,
+  AuthResponse,
   RegisterBody,
   unknown
 > = async (req, res, next) => {
-  const name = req.body.name;
-  const email = req.body.email;
-  const passwordRaw = req.body.password;
+  const { name, email, password: passwordRaw } = req.body;
 
   try {
-    if (!email || !passwordRaw) {
+    if (!name || !email || !passwordRaw) {
       throw createHttpError(400, "Parameters missing");
     }
 
@@ -66,13 +45,14 @@ export const register: RequestHandler<
       name: name,
       email: email,
       password: passwordHashed,
+      resetPasswordToken: undefined,
+      resetPasswordExpiresAt: undefined,
     });
 
     req.session.userId = newUser._id as mongoose.Types.ObjectId;
     res.status(201).json({
-      _id: req.session.userId,
-      name: newUser.name,
-      email: newUser.email,
+      isSuccess: true,
+      message: "Registration successsful",
     });
   } catch (error) {
     next(error);
@@ -86,12 +66,11 @@ interface LoginBody {
 
 export const login: RequestHandler<
   unknown,
-  UserResponse,
+  AuthResponse,
   LoginBody,
   unknown
 > = async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
 
   try {
     if (!email || !password) {
@@ -114,9 +93,8 @@ export const login: RequestHandler<
 
     req.session.userId = user._id as mongoose.Types.ObjectId;
     res.status(201).json({
-      _id: req.session.userId,
-      name: user.name,
-      email: user.email,
+      isSuccess: true,
+      message: "Login successsful",
     });
   } catch (error) {
     next(error);
@@ -131,4 +109,128 @@ export const logout: RequestHandler = (req, res, next) => {
       res.sendStatus(200);
     }
   });
+};
+
+interface ForgotPasswordBody {
+  email?: string;
+}
+
+export const forgotPassword: RequestHandler<
+  unknown,
+  AuthResponse,
+  ForgotPasswordBody,
+  unknown
+> = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await UserSchema.findOne({ email });
+
+    if (!user) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = new Date(resetTokenExpiresAt);
+
+    await user.save();
+
+    // TO:DO send email
+
+    res.status(200).json({
+      isSuccess: true,
+      message: `Reset password link ${env.CLIENT_URL}/reset-password/${resetToken}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface ResetPasswordBody {
+  token: string;
+  password: string;
+}
+
+export const resetPassword: RequestHandler<
+  unknown,
+  AuthResponse,
+  ResetPasswordBody,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { token, password: passwordRaw } = req.body;
+
+    const user = await UserSchema.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const passwordHashed = await bcrypt.hash(passwordRaw, 10);
+
+    user.password = passwordHashed;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresAt = undefined;
+    await user.save();
+
+    res.status(200).json({
+      isSuccess: true,
+      message: "Password reset successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface ChangePasswordBody {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export const changePassword: RequestHandler<
+  unknown,
+  AuthResponse,
+  ChangePasswordBody,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { currentPassword: currentPasswordRaw, newPassword: newPasswordRaw } =
+      req.body;
+
+    const user = await UserSchema.findById(req.session.userId)
+      .select("+password")
+      .exec();
+
+    if (!user) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      currentPasswordRaw,
+      user.password
+    );
+
+    if (!passwordMatch) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const passwordHashed = await bcrypt.hash(newPasswordRaw, 10);
+
+    user.password = passwordHashed;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresAt = undefined;
+    await user.save();
+
+    res.status(200).json({
+      isSuccess: true,
+      message: "Password change successful",
+    });
+  } catch (error) {
+    next(error);
+  }
 };

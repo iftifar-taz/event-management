@@ -1,27 +1,14 @@
-import DefaultLayout from "@/components/layouts/DefaultLayout";
-import { useEffect, useState } from "react";
-import * as AuthApi from "@/api/auth";
-import { User } from "@/models/User";
+import AppLayout from "@/components/layouts/AppLayout";
+import { useAuthStore } from "@/store/authStore";
 
 const Dashboard = () => {
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-  useEffect(() => {
-    async function fetchLoggedInUser() {
-      try {
-        const user = await AuthApi.getCurrentUser();
-        setLoggedInUser(user);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchLoggedInUser();
-  }, []);
-
+  const { user } = useAuthStore();
   return (
-    <DefaultLayout>
+    <AppLayout>
       <div>Dashboard</div>
-      <div>{loggedInUser?.email}</div>
-    </DefaultLayout>
+      <div>{user?.name}</div>
+      <div>{user?.email}</div>
+    </AppLayout>
   );
 };
 
