@@ -14,16 +14,20 @@ import { RegisterInputs } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { registerSchema } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { AxiosError } from "axios";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const Register = () => {
+  const navigate = useNavigate();
   const { register, isLoading } = useAuthStore();
   const [error, setError] = useState("");
 
   const form = useForm<RegisterInputs>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -32,12 +36,14 @@ const Register = () => {
   });
 
   const onSubmit = async (data: RegisterInputs) => {
-    await register(data);
     try {
       await register(data);
+      navigate("/login");
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
+      console.log(error);
+      if (error instanceof AxiosError) {
+        console.log(error);
+        setError(error.response?.data.error);
       }
     }
   };
@@ -47,6 +53,19 @@ const Register = () => {
       <div className="font-bold text-red-600">{error}</div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Name" autoFocus />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"
@@ -67,7 +86,7 @@ const Register = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Password" autoFocus />
+                  <PasswordInput {...field} placeholder="Password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,7 +99,7 @@ const Register = () => {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Confirm Password" autoFocus />
+                  <PasswordInput {...field} placeholder="Confirm Password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

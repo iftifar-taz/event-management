@@ -1,5 +1,6 @@
 import axios from "axios";
 import env from "../lib/validateEnv";
+import { useAuthStore } from "@/store/authStore";
 
 // Create an axios instance
 export const http = axios.create({
@@ -34,6 +35,10 @@ http.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     console.log("response interceptor error");
+    if (error.response?.status === 401) {
+      // Handle session expiry globally
+      useAuthStore.getState().logout(); // Call the logout function from Zustand store
+    }
     return Promise.reject(error);
   }
 );

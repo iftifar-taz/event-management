@@ -40,7 +40,7 @@ const App = () => {
           element={
             !isAuthenticated ? (
               <>
-                <PageTitle title="Dashboard" />
+                <PageTitle title="Login" />
                 <Login />
               </>
             ) : (
@@ -53,7 +53,7 @@ const App = () => {
           element={
             !isAuthenticated ? (
               <>
-                <PageTitle title="Dashboard" />
+                <PageTitle title="Register" />
                 <Register />
               </>
             ) : (

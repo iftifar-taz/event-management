@@ -14,10 +14,13 @@ import { LoginInputs } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { loginSchema } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { AxiosError } from "axios";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { login, isLoading } = useAuthStore();
   const [error, setError] = useState("");
 
@@ -33,9 +36,10 @@ const Login = () => {
   const onSubmit = async (data: LoginInputs) => {
     try {
       await login(data);
+      navigate("/dashboard");
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data.error);
       }
     }
   };
@@ -65,7 +69,7 @@ const Login = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Password" autoFocus />
+                  <PasswordInput {...field} placeholder="Password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
