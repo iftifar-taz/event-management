@@ -41,7 +41,7 @@ interface ChangePasswordBody {
   newPassword: string;
 }
 
-export const changePassword: RequestHandler<
+export const changeAuthenticatedUserPassword: RequestHandler<
   unknown,
   AuthResponse,
   ChangePasswordBody,

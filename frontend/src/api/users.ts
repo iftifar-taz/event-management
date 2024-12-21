@@ -11,9 +11,8 @@ export const getCurrentUser = async (): Promise<User> => {
 export const changePassword = async (
   changePasswordInputs: ChangePasswordInputs
 ): Promise<AuthResponse> => {
-  const result = await http.post<AuthResponse>(
-    "/users/current/password/change",
-    changePasswordInputs
-  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { confirmNewPassword, ...dto } = changePasswordInputs;
+  const result = await http.patch<AuthResponse>("/current/password", dto);
   return result.data;
 };

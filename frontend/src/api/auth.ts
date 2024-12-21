@@ -17,10 +17,9 @@ export const login = async (
 export const register = async (
   registerInputs: RegisterInputs
 ): Promise<AuthResponse> => {
-  const result = await http.post<AuthResponse>(
-    "/auth/register",
-    registerInputs
-  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { confirmPassword, ...dto } = registerInputs;
+  const result = await http.post<AuthResponse>("/auth/register", dto);
   return result.data;
 };
 
@@ -41,9 +40,8 @@ export const forgotPassword = async (
 export const resetPassword = async (
   resetPasswordInputs: ResetPasswordInputs
 ): Promise<AuthResponse> => {
-  const result = await http.post<AuthResponse>(
-    "/auth/password/reset",
-    resetPasswordInputs
-  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { confirmPassword, ...dto } = resetPasswordInputs;
+  const result = await http.post<AuthResponse>("/auth/password/reset", dto);
   return result.data;
 };

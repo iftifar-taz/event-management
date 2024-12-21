@@ -1,11 +1,13 @@
 import express from "express";
-import { requiresAuth } from "../middleware/auth";
 import * as UserController from "../controllers/users";
 
 const router = express.Router();
 
-router.get("/current", requiresAuth, UserController.getAuthenticatedUser);
+router.get("/current", UserController.getAuthenticatedUser);
 
-router.post("/current/password/change", UserController.changePassword);
+router.patch(
+  "/current/password",
+  UserController.changeAuthenticatedUserPassword
+);
 
 export default router;
