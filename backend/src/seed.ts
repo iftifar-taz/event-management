@@ -37,5 +37,3 @@ async function seedDB() {
 }
 
 export default seedDB;
-
-// const passwordHashed = await bcrypt.hash(passwordRaw, 10);
