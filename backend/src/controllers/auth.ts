@@ -5,11 +5,7 @@ import UserSchema from "../schemas/User";
 import mongoose from "mongoose";
 import crypto from "crypto";
 import env from "../util/validateEnv";
-
-interface AuthResponse {
-  isSuccess: boolean;
-  message?: string;
-}
+import { AuthResponse } from "../models/AuthResponse";
 
 interface RegisterBody {
   name?: string;
@@ -181,54 +177,6 @@ export const resetPassword: RequestHandler<
     res.status(200).json({
       isSuccess: true,
       message: "Password reset successful",
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-interface ChangePasswordBody {
-  currentPassword: string;
-  newPassword: string;
-}
-
-export const changePassword: RequestHandler<
-  unknown,
-  AuthResponse,
-  ChangePasswordBody,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { currentPassword: currentPasswordRaw, newPassword: newPasswordRaw } =
-      req.body;
-
-    const user = await UserSchema.findById(req.session.userId)
-      .select("+password")
-      .exec();
-
-    if (!user) {
-      throw createHttpError(401, "Invalid credentials");
-    }
-
-    const passwordMatch = await bcrypt.compare(
-      currentPasswordRaw,
-      user.password
-    );
-
-    if (!passwordMatch) {
-      throw createHttpError(401, "Invalid credentials");
-    }
-
-    const passwordHashed = await bcrypt.hash(newPasswordRaw, 10);
-
-    user.password = passwordHashed;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpiresAt = undefined;
-    await user.save();
-
-    res.status(200).json({
-      isSuccess: true,
-      message: "Password change successful",
     });
   } catch (error) {
     next(error);

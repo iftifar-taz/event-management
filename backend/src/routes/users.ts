@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.get("/current", requiresAuth, UserController.getAuthenticatedUser);
 
+router.post("/current/password/change", UserController.changePassword);
+
 export default router;

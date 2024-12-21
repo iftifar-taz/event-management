@@ -1,5 +1,4 @@
 import {
-  ChangePasswordInputs,
   ForgotPasswordInputs,
   LoginInputs,
   RegisterInputs,
@@ -45,16 +44,6 @@ export const resetPassword = async (
   const result = await http.post<AuthResponse>(
     "/auth/password/reset",
     resetPasswordInputs
-  );
-  return result.data;
-};
-
-export const changePassword = async (
-  changePasswordInputs: ChangePasswordInputs
-): Promise<AuthResponse> => {
-  const result = await http.post<AuthResponse>(
-    "/auth/password/change",
-    changePasswordInputs
   );
   return result.data;
 };
