@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 
 declare module "express-session" {
   interface SessionData {
-    userId: mongoose.Types.ObjectId;
+    userId: Types.ObjectId;
   }
 }

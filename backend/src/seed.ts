@@ -1,13 +1,15 @@
 import bcrypt from "bcrypt";
-import UserSchema, { IUser } from "./schemas/User";
+import UserSchema, { User } from "./schemas/User";
 
-const users: Partial<IUser>[] = [
+const users: User[] = [
   {
     name: "Iftifar",
     email: "iftifar@example.com",
     password: "111",
     resetPasswordToken: undefined,
     resetPasswordExpiresAt: undefined,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     name: "John",
@@ -15,12 +17,14 @@ const users: Partial<IUser>[] = [
     password: "111",
     resetPasswordToken: undefined,
     resetPasswordExpiresAt: undefined,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
 async function seedDB() {
   try {
-    users.forEach(async (user: Partial<IUser>) => {
+    users.forEach(async (user: User) => {
       user.password = await bcrypt.hash(user.password!, 10);
     });
     const userCount = await UserSchema.countDocuments();

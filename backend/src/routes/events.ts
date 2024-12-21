@@ -1,18 +1,8 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import * as EventController from "../controllers/events";
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    res.status(200).json({});
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      res
-        .status(500)
-        .json({ error: "Error fetching users", details: err.message });
-    }
-    res.status(500).json({ error: "Error fetching users", details: "Unknown" });
-  }
-});
+router.get("/", EventController.getAllEvent);
 
 export default router;

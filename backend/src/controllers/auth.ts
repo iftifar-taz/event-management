@@ -2,7 +2,7 @@ import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import { RequestHandler } from "express";
 import UserSchema from "../schemas/User";
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 import crypto from "crypto";
 import env from "../util/validateEnv";
 import { AuthResponse } from "../models/AuthResponse";
@@ -45,7 +45,7 @@ export const register: RequestHandler<
       resetPasswordExpiresAt: undefined,
     });
 
-    req.session.userId = newUser._id as mongoose.Types.ObjectId;
+    req.session.userId = newUser._id as Types.ObjectId;
     res.status(201).json({
       isSuccess: true,
       message: "Registration successsful",
@@ -87,7 +87,7 @@ export const login: RequestHandler<
       throw createHttpError(401, "Invalid credentials");
     }
 
-    req.session.userId = user._id as mongoose.Types.ObjectId;
+    req.session.userId = user._id as Types.ObjectId;
     res.status(201).json({
       isSuccess: true,
       message: "Login successsful",

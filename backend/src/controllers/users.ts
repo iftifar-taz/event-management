@@ -1,12 +1,12 @@
 import createHttpError from "http-errors";
 import { RequestHandler } from "express";
 import UserSchema from "../schemas/User";
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 import { AuthResponse } from "../models/AuthResponse";
 import bcrypt from "bcrypt";
 
 interface UserResponse {
-  _id: mongoose.Types.ObjectId;
+  _id: Types.ObjectId;
   name: string;
   email: string;
 }
@@ -27,7 +27,7 @@ export const getAuthenticatedUser: RequestHandler<
     }
 
     res.status(200).json({
-      _id: user._id as mongoose.Types.ObjectId,
+      _id: user._id as Types.ObjectId,
       name: user.name,
       email: user.email,
     });
