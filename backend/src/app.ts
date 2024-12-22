@@ -1,20 +1,19 @@
 import "dotenv/config";
 import express, { Express, NextFunction, Request, Response } from "express";
-import authRoutes from "./routes/auth";
-import usersRoutes from "./routes/users";
-import eventsRoutes from "./routes/events";
 import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
 import env from "./util/validateEnv";
 import MongoStore from "connect-mongo";
-import { requiresAuth } from "./middleware/auth";
+import { authenticate } from "./middleware/authenticate.middleware";
 import cors from "cors";
+import { eventRoutes, sessionRoutes, userRoutes } from "./routes";
+import { authorizedEmail } from "./middleware/authorizedEmail.middleware";
 
 // Initialize Express app
 const app: Express = express();
 
 // CORS setup
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
@@ -35,9 +34,9 @@ app.use(
 );
 
 // Use routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", requiresAuth, usersRoutes);
-app.use("/api/events", requiresAuth, eventsRoutes);
+app.use("/api/sessions", sessionRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/events", authenticate, authorizedEmail, eventRoutes);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found!"));

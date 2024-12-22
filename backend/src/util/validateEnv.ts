@@ -6,4 +6,5 @@ export default cleanEnv(process.env, {
   PORT: port(),
   SESSION_SECRET: str(),
   CLIENT_URL: str(),
+  AUTHORIZED_EMAILS: str(),
 });
