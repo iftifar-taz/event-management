@@ -4,10 +4,11 @@ import {
   CreateSessionBody,
   SessionResponse,
 } from "../interfaces/session.interfaces";
+import { UserResponse } from "../interfaces/user.interfaces";
 
 export const createSession: RequestHandler<
   unknown,
-  SessionResponse,
+  UserResponse,
   CreateSessionBody,
   unknown
 > = async (req, res, next) => {
@@ -15,16 +16,18 @@ export const createSession: RequestHandler<
     const user = await userService.findUserByEmailAndPassword(req.body);
     req.session.userId = user.id;
     req.session.email = user.email;
-    res.status(201).json({
-      isSuccess: true,
-      message: "Session created",
-    });
+    res.status(201).json(user);
   } catch (error) {
     next(error);
   }
 };
 
-export const deleteSession: RequestHandler = (req, res, next) => {
+export const deleteSession: RequestHandler<
+  unknown,
+  SessionResponse,
+  unknown,
+  unknown
+> = (req, res, next) => {
   req.session.destroy((error) => {
     if (!error) {
       res.status(200).json({

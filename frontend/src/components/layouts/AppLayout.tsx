@@ -1,26 +1,14 @@
-import { FC, ReactNode, useEffect } from "react";
+import { FC, ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "../Header";
 import AppSidebar from "../AppSidebar";
 import Footer from "../Footer";
 import { useAuthStore } from "@/store/authStore";
-import * as UsersApi from "@/api/users";
 
 const AppLayout: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { user, setUser } = useAuthStore();
-  useEffect(() => {
-    async function fetchLoggedInUser() {
-      try {
-        const currentUser = await UsersApi.getCurrentUser();
-        setUser(currentUser);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchLoggedInUser();
-  }, [setUser]);
+  const { user } = useAuthStore();
 
   return (
     <SidebarProvider>

@@ -37,7 +37,7 @@ http.interceptors.response.use(
     console.log("response interceptor error");
     if (error.response?.status === 401) {
       // Handle session expiry globally
-      useAuthStore.getState().logout(); // Call the logout function from Zustand store
+      useAuthStore.getState().setUser(null);
     }
     return Promise.reject(error);
   }

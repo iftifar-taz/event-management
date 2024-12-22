@@ -1,8 +1,8 @@
-import { User } from "@/models/User";
+import { UserResponse } from "@/interfaces/user.interfaces";
 import { SidebarTrigger } from "./ui/sidebar";
 
 interface HeaderProps {
-  user: User | null;
+  user: UserResponse | null;
 }
 
 const Header = ({ user }: HeaderProps) => {

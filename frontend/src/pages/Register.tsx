@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import AuthLayout from "../../components/layouts/AuthLayout";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -18,10 +17,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { PasswordInput } from "@/components/ui/password-input";
+import { createUser } from "@/services/users.service";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, isLoading } = useAuthStore();
+  const { setUser } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const form = useForm<RegisterInputs>({
@@ -36,15 +38,22 @@ const Register = () => {
   });
 
   const onSubmit = async (data: RegisterInputs) => {
+    setIsLoading(true);
     try {
-      await register(data);
-      navigate("/login");
+      const result = await createUser(data);
+      if (result?.id) {
+        setUser(result);
+        setIsLoading(false);
+        navigate("/dashboard");
+      }
     } catch (error: unknown) {
       console.log(error);
       if (error instanceof AxiosError) {
         console.log(error);
         setError(error.response?.data.error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 

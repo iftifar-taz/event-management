@@ -12,7 +12,7 @@ import * as emailService from "../services/email.service";
 
 export const createUser: RequestHandler<
   unknown,
-  SessionResponse,
+  UserResponse,
   CreateUserBody,
   unknown
 > = async (req, res, next) => {
@@ -20,10 +20,7 @@ export const createUser: RequestHandler<
     const newUser = await userService.createUser(req.body);
     req.session.userId = newUser.id;
     req.session.email = newUser.email;
-    res.status(201).json({
-      isSuccess: true,
-      message: "Registration successsful",
-    });
+    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }

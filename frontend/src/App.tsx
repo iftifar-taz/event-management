@@ -1,77 +1,85 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Login from "./pages/auth/Login";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import Register from "./pages/auth/Register";
-import NotFound from "./pages/NotFound";
-import { useAuthStore } from "./store/authStore";
+import { Route, Routes } from "react-router-dom";
 import PageTitle from "./components/PageTitle";
-import AuthorizedRoute from "./components/auth/AuthorizedRoute";
-import UnauthorizedRoute from "./components/auth/UnauthorizedRoute";
+import { lazy, Suspense } from "react";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { withAuthentication, withNoAuthentication } from "./middleware";
+
+const Home = lazy(() => import("./pages/Home"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Logout = lazy(() => import("./pages/Logout"));
+
+const UnauthenticatedLogin = withNoAuthentication(Login);
+const UnauthenticatedRegister = withNoAuthentication(Register);
+
+const AuthenticatedDashboard = withAuthentication(Dashboard);
+const AuthenticatedLogout = withAuthentication(Logout);
 
 const App = () => {
-  const { isAuthenticated } = useAuthStore();
-  // TO:DO move all routes to a const
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <>
-            <PageTitle title="Home" />
-            <Home />
-          </>
-        }
-      />
-      <Route element={<AuthorizedRoute />}>
-        <Route
-          path="/dashboard"
-          element={
-            <>
-              <PageTitle title="Dashboard" />
-              <Dashboard />
-            </>
-          }
-        />
-      </Route>
-      <Route element={<UnauthorizedRoute />}>
-        <Route
-          path="/login"
-          element={
-            !isAuthenticated ? (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ErrorBoundary>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <PageTitle title="Home" />
+                <Home />
+              </>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <>
+                <PageTitle title="Dashboard" />
+                <AuthenticatedDashboard />
+              </>
+            }
+          />
+          <Route
+            path="/logout"
+            element={
+              <>
+                <AuthenticatedLogout />
+              </>
+            }
+          />
+          <Route
+            path="/login"
+            element={
               <>
                 <PageTitle title="Login" />
-                <Login />
+                <UnauthenticatedLogin />
               </>
-            ) : (
-              <Navigate to="/dashboard" replace />
-            )
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            !isAuthenticated ? (
+            }
+          />
+          <Route
+            path="/register"
+            element={
               <>
                 <PageTitle title="Register" />
-                <Register />
+                <UnauthenticatedRegister />
               </>
-            ) : (
-              <Navigate to="/dashboard" replace />
-            )
-          }
-        />
-      </Route>
-      <Route
-        path="*"
-        element={
-          <>
-            <PageTitle title="Not Found" />
-            <NotFound />
-          </>
-        }
-      />
-    </Routes>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <>
+                <PageTitle title="Not Found" />
+                <NotFound />
+              </>
+            }
+          />
+        </Routes>
+      </ErrorBoundary>
+    </Suspense>
   );
 };
 
