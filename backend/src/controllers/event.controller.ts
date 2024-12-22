@@ -67,8 +67,8 @@ export const updateEvent: RequestHandler<
 
 export const deleteEvent: RequestHandler<
   { id: Types.ObjectId },
-  EventResponse,
-  UpdateEventBody,
+  unknown,
+  unknown,
   unknown
 > = async (req, res, next) => {
   try {

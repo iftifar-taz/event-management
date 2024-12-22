@@ -9,15 +9,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RegisterInputs } from "@/lib/types";
+import { RegisterForm } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { registerSchema } from "@/lib/validations";
+import { registerForm } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { PasswordInput } from "@/components/ui/password-input";
-import { createUser } from "@/services/users.service";
+import { createUser } from "@/services/user.service";
 import AuthLayout from "@/components/layouts/AuthLayout";
 
 const Register = () => {
@@ -26,8 +26,8 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const form = useForm<RegisterInputs>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<RegisterForm>({
+    resolver: zodResolver(registerForm),
     defaultValues: {
       name: "",
       email: "",
@@ -37,7 +37,7 @@ const Register = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: RegisterInputs) => {
+  const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
       const result = await createUser(data);

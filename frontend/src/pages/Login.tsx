@@ -9,9 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginInputs } from "@/lib/types";
+import { LoginForm } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { loginSchema } from "@/lib/validations";
+import { loginForm } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -26,8 +26,8 @@ const Login = () => {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const form = useForm<LoginInputs>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<LoginForm>({
+    resolver: zodResolver(loginForm),
     defaultValues: {
       email: "",
       password: "",
@@ -35,7 +35,7 @@ const Login = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: LoginInputs) => {
+  const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     try {
       const result = await createSessoin(data);

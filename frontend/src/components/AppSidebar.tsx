@@ -16,6 +16,11 @@ const items = [
     icon: Home,
   },
   {
+    title: "Events",
+    url: "/events",
+    icon: Calendar,
+  },
+  {
     title: "Inbox",
     url: "/login",
     icon: Inbox,
@@ -36,7 +41,7 @@ const items = [
     icon: Settings,
   },
   {
-    title: "Log out",
+    title: "Logout",
     url: "/logout",
     icon: LogOut,
   },

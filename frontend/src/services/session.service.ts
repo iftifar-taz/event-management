@@ -1,12 +1,12 @@
-import { LoginInputs } from "@/lib/types";
+import { LoginForm } from "@/lib/types";
 import { http } from "./base";
 import { SessionResponse } from "@/interfaces/session.interfaces";
 import { UserResponse } from "@/interfaces/user.interfaces";
 
 export const createSessoin = async (
-  loginInputs: LoginInputs
+  LoginForm: LoginForm
 ): Promise<UserResponse> => {
-  const result = await http.post<UserResponse>("/sessions", loginInputs);
+  const result = await http.post<UserResponse>("/sessions", LoginForm);
   return result.data;
 };
 

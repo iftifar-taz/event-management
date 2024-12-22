@@ -2,15 +2,18 @@ import { z } from "zod";
 
 export const optionalString = z.string().trim().optional().or(z.literal(""));
 export const requiredString = z.string().trim();
+export const requiredDate = z.date().refine((val) => !isNaN(val.getTime()), {
+  message: "Invalid date format",
+});
 
-export const loginSchema = z.object({
+export const loginForm = z.object({
   email: requiredString
     .email({ message: "Invalid Email" })
     .min(1, { message: "Field is required" }),
   password: requiredString.min(1, { message: "Field is required" }),
 });
 
-export const registerSchema = z
+export const registerForm = z
   .object({
     name: requiredString.min(1, { message: "Field is required" }),
     email: requiredString
@@ -24,13 +27,13 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
-export const forgotPasswordSchema = z.object({
+export const forgotPasswordForm = z.object({
   email: requiredString
     .email({ message: "Invalid Email" })
     .min(1, { message: "Field is required" }),
 });
 
-export const resetPasswordSchema = z
+export const resetPasswordForm = z
   .object({
     password: requiredString.min(1, { message: "Field is required" }),
     confirmPassword: requiredString.min(1, { message: "Field is required" }),
@@ -40,7 +43,7 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export const changePasswordSchema = z
+export const changePasswordForm = z
   .object({
     currentPassword: requiredString.min(1, { message: "Field is required" }),
     newPassword: requiredString.min(1, { message: "Field is required" }),
@@ -50,3 +53,16 @@ export const changePasswordSchema = z
     message: "Password do not match",
     path: ["confirmNewPassword"],
   });
+
+export const createEventForm = z.object({
+  name: requiredString.min(1, { message: "Field is required" }),
+  description: optionalString,
+  startDate: requiredDate,
+  endDate: requiredDate,
+  registrationFee: z.number().min(1, { message: "Field is required" }),
+});
+
+export const updateEventForm = z.object({
+  ...createEventForm.shape,
+  status: requiredString.min(1, { message: "Field is required" }),
+});

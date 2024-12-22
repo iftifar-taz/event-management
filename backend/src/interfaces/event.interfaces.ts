@@ -19,11 +19,6 @@ export interface CreateEventBody {
   registrationFee: number;
 }
 
-export interface UpdateEventBody {
-  name: string;
-  description: string;
-  startDate: NativeDate;
-  endDate: NativeDate;
-  registrationFee: number;
+export interface UpdateEventBody extends CreateEventBody {
   status: EventStatus;
 }
