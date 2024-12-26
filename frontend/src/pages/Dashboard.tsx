@@ -1,8 +1,8 @@
 import AppLayout from "@/components/layouts/AppLayout";
-import { useAuthStore } from "@/store/authStore";
+import { useUserStore } from "@/store/userStore";
 
 const Dashboard = () => {
-  const { user } = useAuthStore();
+  const { user } = useUserStore();
   return (
     <AppLayout>
       <div>Dashboard</div>

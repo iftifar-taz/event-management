@@ -1,6 +1,7 @@
 import axios from "axios";
 import env from "../lib/validateEnv";
-import { useAuthStore } from "@/store/authStore";
+import { useUserStore } from "@/store/userStore";
+import { useSessionStore } from "@/store/sessionStore";
 
 // Create an axios instance
 export const http = axios.create({
@@ -37,7 +38,9 @@ http.interceptors.response.use(
     console.log("response interceptor error");
     if (error.response?.status === 401) {
       // Handle session expiry globally
-      useAuthStore.getState().setUser(null);
+      useUserStore.getState().setUser(null);
+      useSessionStore.getState().setIsAdmin(false);
+      useSessionStore.getState().setIsAuthenticated(false);
     }
     return Promise.reject(error);
   }

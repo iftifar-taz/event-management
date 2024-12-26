@@ -12,17 +12,21 @@ import { Input } from "@/components/ui/input";
 import { RegisterForm } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { registerForm } from "@/lib/validations";
-import { useAuthStore } from "@/store/authStore";
+import { useUserStore } from "@/store/userStore";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { PasswordInput } from "@/components/ui/password-input";
 import { createUser } from "@/services/user.service";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import env from "@/lib/validateEnv";
+import { useSessionStore } from "@/store/sessionStore";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
+  const { setUser } = useUserStore();
+  const { setIsAuthenticated, setIsAdmin } = useSessionStore();
+  const authorizedEmails = env.VITE_AUTHORIZED_EMAILS.split(",");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -42,7 +46,9 @@ const Register = () => {
     try {
       const result = await createUser(data);
       if (result?.id) {
-        setUser(result);
+        setIsAuthenticated(!!result);
+        setIsAdmin(authorizedEmails.includes(result?.email));
+        setUser(result || null);
         setIsLoading(false);
         navigate("/dashboard");
       }

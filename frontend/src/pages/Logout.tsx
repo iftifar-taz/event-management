@@ -1,11 +1,11 @@
 import { deleteSessoin } from "@/services/session.service";
-import { useAuthStore } from "@/store/authStore";
+import { useUserStore } from "@/store/userStore";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
+  const { setUser } = useUserStore();
 
   useEffect(() => {
     async function logoutNow() {

@@ -2,9 +2,6 @@ import { z } from "zod";
 
 export const optionalString = z.string().trim().optional().or(z.literal(""));
 export const requiredString = z.string().trim();
-export const requiredDate = z.date().refine((val) => !isNaN(val.getTime()), {
-  message: "Invalid date format",
-});
 
 export const loginForm = z.object({
   email: requiredString
@@ -54,15 +51,20 @@ export const changePasswordForm = z
     path: ["confirmNewPassword"],
   });
 
-export const createEventForm = z.object({
+export const eventForm = z.object({
   name: requiredString.min(1, { message: "Field is required" }),
   description: optionalString,
-  startDate: requiredDate,
-  endDate: requiredDate,
-  registrationFee: z.number().min(1, { message: "Field is required" }),
-});
-
-export const updateEventForm = z.object({
-  ...createEventForm.shape,
+  startDate: z.date({
+    required_error: "Date is required",
+    invalid_type_error: "Invalid date",
+  }),
+  endDate: z.date({
+    required_error: "Date is required",
+    invalid_type_error: "Invalid date",
+  }),
+  registrationFee: z.preprocess(
+    (a) => parseInt(z.string().parse(a), 10),
+    z.number().gte(0, "Field is required")
+  ),
   status: requiredString.min(1, { message: "Field is required" }),
 });

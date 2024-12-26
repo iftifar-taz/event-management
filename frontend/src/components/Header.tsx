@@ -1,11 +1,8 @@
-import { UserResponse } from "@/interfaces/user.interfaces";
 import { SidebarTrigger } from "./ui/sidebar";
+import { useUserStore } from "@/store/userStore";
 
-interface HeaderProps {
-  user: UserResponse | null;
-}
-
-const Header = ({ user }: HeaderProps) => {
+const Header = () => {
+  const { user } = useUserStore();
   return (
     <header className="sticky top-0 flex w-full bg-white drop-shadow-1">
       <div className="flex flex-grow items-center justify-between pr-4 py-4 shadow-2 md:pr-6 2xl:pr-11">

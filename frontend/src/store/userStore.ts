@@ -2,13 +2,13 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { UserResponse } from "@/interfaces/user.interfaces";
 
-export interface AuthStore {
+export interface UserStore {
   user: UserResponse | null;
   setUser: (user: UserResponse | null) => void;
 }
 
-export const useAuthStore = create(
-  persist<AuthStore>(
+export const useUserStore = create(
+  persist<UserStore>(
     (set) => ({
       user: null,
       setUser: (user: UserResponse | null) => set({ user }),
