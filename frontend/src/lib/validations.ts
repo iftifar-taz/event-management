@@ -62,9 +62,6 @@ export const eventForm = z.object({
     required_error: "Date is required",
     invalid_type_error: "Invalid date",
   }),
-  registrationFee: z.preprocess(
-    (a) => parseInt(z.string().parse(a), 10),
-    z.number().gte(0, "Field is required")
-  ),
+  registrationFee: z.number().gte(0, "Field is required"),
   status: requiredString.min(1, { message: "Field is required" }),
 });

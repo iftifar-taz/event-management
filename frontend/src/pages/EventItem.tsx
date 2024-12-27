@@ -62,8 +62,8 @@ const EventItem = ({ mode }: EventItemProps) => {
         if (result) {
           form.setValue("name", result.name);
           form.setValue("description", result.description);
-          form.setValue("startDate", result.startDate);
-          form.setValue("endDate", result.endDate);
+          form.setValue("startDate", new Date(result.startDate));
+          form.setValue("endDate", new Date(result.endDate));
           form.setValue("registrationFee", result.registrationFee);
           form.setValue("status", result.status);
           await form.trigger();
@@ -264,7 +264,11 @@ const EventItem = ({ mode }: EventItemProps) => {
                   )}
                 />
                 <Button
-                  disabled={!form.formState.isValid || isLoading}
+                  disabled={
+                    !form.formState.isDirty ||
+                    !form.formState.isValid ||
+                    isLoading
+                  }
                   type="submit"
                 >
                   {isLoading
