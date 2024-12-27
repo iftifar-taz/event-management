@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import PageTitle from "./components/PageTitle";
 import { lazy, Suspense, useEffect } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -38,16 +38,18 @@ const App = () => {
     setIsAdmin,
   } = useSessionStore();
   const authorizedEmails = env.VITE_AUTHORIZED_EMAILS.split(",");
+  const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
     setCheckingAuthentication(true);
     async function setSessionNow() {
       try {
         const result = await getAuthenticatedUser();
-        console.log(result);
-        setIsAuthenticated(!!result);
+        setIsAuthenticated(!!result?.id);
         setIsAdmin(authorizedEmails.includes(result?.email));
         setUser(result || null);
         setCheckingAuthentication(false);
+        navigate(location.pathname, { replace: true });
       } catch (error) {
         setIsAuthenticated(false);
         setIsAdmin(false);
