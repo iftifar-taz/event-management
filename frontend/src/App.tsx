@@ -31,112 +31,127 @@ const AuthenticatedLogout = withAuthentication(Logout);
 
 const App = () => {
   const { setUser } = useUserStore();
-  const { setIsAuthenticated, setIsAdmin } = useSessionStore();
+  const {
+    checkingAuthentication,
+    setCheckingAuthentication,
+    setIsAuthenticated,
+    setIsAdmin,
+  } = useSessionStore();
   const authorizedEmails = env.VITE_AUTHORIZED_EMAILS.split(",");
   useEffect(() => {
+    setCheckingAuthentication(true);
     async function setSessionNow() {
       try {
         const result = await getAuthenticatedUser();
+        console.log(result);
         setIsAuthenticated(!!result);
         setIsAdmin(authorizedEmails.includes(result?.email));
         setUser(result || null);
+        setCheckingAuthentication(false);
       } catch (error) {
         setIsAuthenticated(false);
         setIsAdmin(false);
         setUser(null);
         console.error(error);
+      } finally {
+        setCheckingAuthentication(false);
       }
     }
     setSessionNow();
   }, []);
 
   return (
-    <Suspense fallback={<Loader />}>
-      <ErrorBoundary>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <PageTitle title="Home" />
-                <Home />
-              </>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <>
-                <PageTitle title="Dashboard" />
-                <AuthenticatedDashboard />
-              </>
-            }
-          />
-          <Route
-            path="/events"
-            element={
-              <>
-                <PageTitle title="Events" />
-                <AuthenticatedEventList />
-              </>
-            }
-          />
-          <Route
-            path="/events/create"
-            element={
-              <>
-                <PageTitle title="Create Event" />
-                <AuthenticatedEventItem mode={PAGE_MODE.create} />
-              </>
-            }
-          />
-          <Route
-            path="/events/:id"
-            element={
-              <>
-                <PageTitle title="Create Event" />
-                <AuthenticatedEventItem mode={PAGE_MODE.update} />
-              </>
-            }
-          />
-          <Route
-            path="/logout"
-            element={
-              <>
-                <AuthenticatedLogout />
-              </>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <>
-                <PageTitle title="Login" />
-                <UnauthenticatedLogin />
-              </>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <>
-                <PageTitle title="Register" />
-                <UnauthenticatedRegister />
-              </>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <>
-                <PageTitle title="Not Found" />
-                <NotFound />
-              </>
-            }
-          />
-        </Routes>
-      </ErrorBoundary>
-    </Suspense>
+    <>
+      {checkingAuthentication && <Loader />}
+      {!checkingAuthentication && (
+        <Suspense fallback={<Loader />}>
+          <ErrorBoundary>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <PageTitle title="Home" />
+                    <Home />
+                  </>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <>
+                    <PageTitle title="Dashboard" />
+                    <AuthenticatedDashboard />
+                  </>
+                }
+              />
+              <Route
+                path="/events"
+                element={
+                  <>
+                    <PageTitle title="Events" />
+                    <AuthenticatedEventList />
+                  </>
+                }
+              />
+              <Route
+                path="/events/create"
+                element={
+                  <>
+                    <PageTitle title="Create Event" />
+                    <AuthenticatedEventItem mode={PAGE_MODE.create} />
+                  </>
+                }
+              />
+              <Route
+                path="/events/:id"
+                element={
+                  <>
+                    <PageTitle title="Create Event" />
+                    <AuthenticatedEventItem mode={PAGE_MODE.update} />
+                  </>
+                }
+              />
+              <Route
+                path="/logout"
+                element={
+                  <>
+                    <AuthenticatedLogout />
+                  </>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <>
+                    <PageTitle title="Login" />
+                    <UnauthenticatedLogin />
+                  </>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <>
+                    <PageTitle title="Register" />
+                    <UnauthenticatedRegister />
+                  </>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <>
+                    <PageTitle title="Not Found" />
+                    <NotFound />
+                  </>
+                }
+              />
+            </Routes>
+          </ErrorBoundary>
+        </Suspense>
+      )}
+    </>
   );
 };
 
