@@ -36,7 +36,7 @@ app.use(
 // Use routes
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/events", authenticate, authorizedEmail, eventRoutes);
+app.use("/api/events", authenticate, eventRoutes);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found!"));
